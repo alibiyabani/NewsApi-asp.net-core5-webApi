@@ -70,10 +70,9 @@ namespace NewsApi.Core.Services
         public async Task<IEnumerable<News>> Search(string searchTerm)
         {
             IQueryable<News> query = _context.News;
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                query.Where(s => s.Body.Contains(searchTerm) || s.Title.Contains(searchTerm) || s.SubTitle.Contains(searchTerm));
-            }
+
+            query.Where(s => s.Body.Contains(searchTerm) || s.Title.Contains(searchTerm) || s.SubTitle.Contains(searchTerm));
+
             return await query.ToListAsync();
         }
 

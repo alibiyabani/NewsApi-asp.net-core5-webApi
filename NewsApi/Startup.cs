@@ -42,6 +42,7 @@ namespace NewsApi
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<INewsService, NewsService>();
             services.AddTransient<ISourceService, SourceService>();
+            services.AddTransient<IUserService, UserService>();
 
 
             //services.AddResponseCaching();
@@ -57,22 +58,12 @@ namespace NewsApi
                         ValidateAudience = false,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = "https://localhost:44306/",
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authnetication"))
+                        ValidIssuer = Configuration.GetValue<string>("TrustUrl:Url"),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("AppSettings:IssuerSigningKey")))
                     };
                 });
 
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("EnableCors", builder =>
-            //    {
-            //        builder.AllowAnyOrigin()
-            //        .AllowAnyHeader()
-            //        .AllowAnyMethod()
-            //        .AllowCredentials()
-            //        .Build();
-            //    });
-            //});
+            services.AddRouting(options => options.LowercaseUrls = true);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -89,7 +80,8 @@ namespace NewsApi
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    .SetIsOriginAllowed(origin => true) 
-                   .AllowCredentials());             
+                   .AllowCredentials()); 
+            
             app.UseAuthentication();
             app.UseAuthorization();
 

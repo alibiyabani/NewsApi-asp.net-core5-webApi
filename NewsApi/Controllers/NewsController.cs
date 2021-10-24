@@ -46,7 +46,7 @@ namespace NewsApi.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return NotFound(result);
                 }
             }
             catch (Exception ex)
